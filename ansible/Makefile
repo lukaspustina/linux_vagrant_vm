@@ -1,9 +1,6 @@
 all: check
 
-check: yamllint syntax
-
-yamllint:
-	yamllint -c .yamllint ./
+check: syntax
 
 syntax:
 	ansible-playbook --syntax-check *.yml -i localhost,
