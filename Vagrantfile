@@ -6,7 +6,9 @@ BOX_NAME = "#{UBUNTU_VERSION}-vagrant-vm"
 
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/#{UBUNTU_VERSION}"
-
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder "./vagrant", "/vagrant"
+  
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
   config.vm.define BOX_NAME do |t| end
@@ -19,10 +21,11 @@ Vagrant.configure("2") do |config|
   # Network forwardings to host
   # config.vm.network "forwarded_port", guest: 5001, host_ip: "127.0.0.1", host: 5001 # e.g., spiderfoot
 
-  config.vm.provision :shell, :inline => "apt update"
-  config.vm.provision :shell, :inline => "apt install -y git rake zsh"
-  config.vm.provision :shell, :inline => "chsh -s /usr/bin/zsh vagrant"
-  config.vm.provision :shell, :privileged => false, :inline => "git clone https://github.com/lukaspustina/dotfiles.git $HOME/.dotfiles && cd $HOME/.dotfiles && ./install.sh"
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "ansible/site.yml"
+  end
+
 end
 
 # -*- mode: ruby -*-

@@ -1,0 +1,4 @@
+---
+
+- name: Include Base Playbook
+  import_playbook: base.yml

@@ -1,0 +1,31 @@
+---
+
+- hosts: all
+  tasks:
+    - name: Install Packages
+      apt:
+        name:
+          - git
+          - rake
+          - zsh
+        cache_valid_time: 3600
+        update_cache: yes
+    - name: Change Shell to ZSH for default User
+      user:
+        name: vagrant
+        shell: /usr/bin/zsh
+      register: vagrant_user
+    - name: Clone Dotfiles for default User
+      git:
+        repo: "https://github.com/lukaspustina/dotfiles.git"
+        dest: "{{ vagrant_user.home }}/.dotfiles"
+      become: yes
+      become_user: vagrant
+      register: dotfiles_cloned
+    - name: Install Dotfiles for default User
+      command: ./install.sh
+      args:
+        chdir: "{{ vagrant_user.home }}/.dotfiles"
+      become: yes
+      become_user: vagrant
+      when: dotfiles_cloned.changed
