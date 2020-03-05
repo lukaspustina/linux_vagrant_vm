@@ -8,4 +8,5 @@ steps:
       python --version
       ansible --version
       vagrant version
+      exit 0
     displayName: Gather Build Environment Information
