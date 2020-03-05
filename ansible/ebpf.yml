@@ -1,0 +1,48 @@
+---
+
+# cf. https://github.com/iovisor/bpftrace/blob/master/INSTALL.md#ubuntu-packages
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: Install bpftrace
+      command: "{{ item }}"
+      with_items:
+        - snap install --devmode bpftrace
+        - snap connect bpftrace:system-trace
+    - name: Add LLVM apt Repo Key
+      apt_key:
+        url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        state: present
+    - name: Add iovisor Repo Key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 4052245BD4284CDD
+    - name: Add Repos
+      apt_repository:
+        repo: "{{ item }}"
+        state: present
+      with_items:
+        - deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-7 main
+        - deb-src http://apt.llvm.org/bionic/ llvm-toolchain-bionic-7 main
+        - deb https://repo.iovisor.org/apt/bionic bionic main
+      register: repos_add
+    - name: Update Apt Cache
+      apt:
+        update_cache: yes
+      when: repos_add.changed
+    - name: Install Packages
+      apt:
+        name:
+          - bison
+          - cmake
+          - flex
+          - g++
+          - libelf-dev
+          - zlib1g-dev
+          - libfl-dev
+          - bcc-tools
+          - libbcc-examples
+          - "linux-headers-{{ ansible_kernel }}"
+        cache_valid_time: 3600
+        update_cache: yes
