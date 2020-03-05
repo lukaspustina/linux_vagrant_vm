@@ -35,3 +35,4 @@ stages:
           matrix:
             vagrant-minimum-${{ variables.vagrant_minimum_version }}:
               vagrant-version: ${{ variables.vagrant_minimum_version }}
+          image_name: $(linux_image_name)
