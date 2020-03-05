@@ -1,6 +1,7 @@
 ---
 
 - hosts: all
+  become: yes
   tasks:
     - name: Install Packages
       apt:
@@ -19,13 +20,11 @@
       git:
         repo: "https://github.com/lukaspustina/dotfiles.git"
         dest: "{{ vagrant_user.home }}/.dotfiles"
-      become: yes
       become_user: vagrant
       register: dotfiles_cloned
     - name: Install Dotfiles for default User
       command: ./install.sh
       args:
         chdir: "{{ vagrant_user.home }}/.dotfiles"
-      become: yes
       become_user: vagrant
       when: dotfiles_cloned.changed

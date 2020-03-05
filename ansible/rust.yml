@@ -1,0 +1,16 @@
+---
+
+- hosts: all
+  become: yes
+  become_user: vagrant
+  tasks:
+    - name: "Install Rust"
+      shell: "curl https://sh.rustup.rs -sSf | sh -s -- -y"
+      changed_when: false
+      args:
+        # prevent Ansible to nag about using curl in shell
+        warn: false
+    - name: "Install Rust Toolchains"
+      command: ".cargo/bin/rustup toolchain install {{ item }}"
+      with_items:
+        - stable

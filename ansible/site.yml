@@ -2,3 +2,11 @@
 
 - name: Include Base Playbook
   import_playbook: base.yml
+
+- name: Install Rust Playbook
+  import_playbook: rust.yml
+  when: install.rust == true
+
+- name: Include eBPF Playbook
+  import_playbook: ebpf.yml
+  when: install.ebpf == true
