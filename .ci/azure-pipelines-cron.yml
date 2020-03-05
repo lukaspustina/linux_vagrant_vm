@@ -35,7 +35,7 @@ stages:
               vagrant-version: ${{ variables.vagrant_latest_version }}
           image_name: $(linux_image_name)
           allow_fail: true
-      - template: templates/ansible_validate.yml
+      - template: templates/ansible_syntax.yml
         parameters:
           matrix:
             ansible-minimum-${{ variables.ansible_minimum_version }}:
