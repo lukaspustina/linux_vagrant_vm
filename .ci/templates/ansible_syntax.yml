@@ -1,0 +1,30 @@
+---
+
+parameters:
+  - name: matrix
+    type: object
+  - name: image_name
+    type: string
+  - name: allow_fail
+    type: boolean
+    default: false
+
+jobs:
+  - job: Ansible_Syntax_Check
+    displayName: "Check Ansible Syntax"
+    strategy:
+      matrix:
+        ${{ insert }}: ${{ parameters.matrix }}
+    pool:
+      vmImage: ${{ parameters.image_name }}
+    # cf. https://developercommunityapi.westus.cloudapp.azure.com/idea/782159/yaml-pipeline-continueonerror-cant-accept-a-variab.html
+    ${{ if eq(parameters.allow_fail, true) }}:
+      continueOnError: true
+    steps:
+      - script: pip install ansible==$(ansible-version)
+        displayName: Install Ansible $(ansible-version)
+      - script: sudo apt-get install parallel
+        displayName: Install parallel
+      - template: version_information.yml
+      - script: make show_config ansible_check
+        displayName: Run Ansible Syntax Check

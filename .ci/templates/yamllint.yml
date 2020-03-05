@@ -1,0 +1,20 @@
+---
+
+parameters:
+- name: image_name
+  type: string
+- name: allow_fail
+  type: boolean
+  default: false
+
+jobs:
+  - job: Yaml_Lint
+    displayName: "Lint All Yaml Files"
+    pool:
+      vmImage: $(linux_image_name)
+    steps:
+      - script: sudo apt-get install yamllint
+        displayName: Install yamllint
+      - template: version_information.yml
+      - script: make show_config yamllint
+        displayName: Run Yaml Lint

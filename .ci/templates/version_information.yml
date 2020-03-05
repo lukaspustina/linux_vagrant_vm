@@ -1,0 +1,11 @@
+---
+
+steps:
+  - script: |
+      cat /etc/lsb-release
+      parallel --version
+      yamllint --version
+      python --version
+      ansible --version
+      vagrant version
+    displayName: Gather Build Environment Information

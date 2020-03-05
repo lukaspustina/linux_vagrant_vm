@@ -1,0 +1,33 @@
+---
+
+parameters:
+  - name: matrix
+    type: object
+  - name: image_name
+    type: string
+  - name: allow_fail
+    type: boolean
+    default: false
+
+jobs:
+  - job: Vagrant_Validate
+    displayName: "Validate Vagrant Configuration"
+    strategy:
+      matrix:
+        ${{ insert }}: ${{ parameters.matrix }}
+    pool:
+      vmImage: ${{ parameters.image_name }}
+    # cf. https://developercommunityapi.westus.cloudapp.azure.com/idea/782159/yaml-pipeline-continueonerror-cant-accept-a-variab.html
+    ${{ if eq(parameters.allow_fail, true) }}:
+      continueOnError: true
+    steps:
+      - script: |
+          curl https://releases.hashicorp.com/vagrant/$(vagrant-version)/vagrant_$(vagrant-version)_linux_amd64.zip > /tmp/vagrant-$(vagrant-version).zip && \
+          cd /tmp; unzip /tmp/vagrant-$(vagrant-version).zip && \
+          echo "##vso[task.setvariable variable=path]/tmp/:$PATH"
+        displayName: Install Vagrant
+      - script: sudo apt-get install parallel
+        displayName: Install parallel
+      - template: version_information.yml
+      - script: make show_config vagrant_check
+        displayName: Run Vagrant Validate

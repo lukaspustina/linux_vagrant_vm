@@ -1,0 +1,37 @@
+---
+
+name: $(Build.sourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
+
+# Set global variables
+variables:
+  - template: variables.yml
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - '*'
+
+pr:
+  branches:
+    include:
+      - '*'
+
+stages:
+  - stage: Check_Validate
+    displayName: "Check and Validate"
+    jobs:
+      - template: templates/yamllint.yml
+        parameters:
+          image_name: $(linux_image_name)
+      - template: templates/ansible_syntax.yml
+        parameters:
+          matrix:
+            ansible-minimum-${{ variables.ansible_minimum_version }}:
+              ansible-version: ${{ variables.ansible_minimum_version }}
+          image_name: $(linux_image_name)
+      - template: templates/vagrant_validate.yml
+        parameters:
+          matrix:
+            vagrant-minimum-${{ variables.vagrant_minimum_version }}:
+              vagrant-version: ${{ variables.vagrant_minimum_version }}

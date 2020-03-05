@@ -1,0 +1,10 @@
+---
+
+variables:
+  linux_image_name: 'ubuntu-18.04'
+  ansible_minimum_version: "2.8.*"
+  ansible_next_version: "2.9.*"
+  ansible_latest_version: "2.*"
+  vagrant_minimum_version: 2.2.4
+  vagrant_next_version: 2.2.7
+  vagrant_latest_version: 2.2.7

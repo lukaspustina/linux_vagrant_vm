@@ -1,0 +1,48 @@
+---
+
+name: $(Build.sourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
+
+# Set global variables
+variables:
+  - template: variables.yml
+
+# Deactivate all triggers for this pipeline
+trigger: none
+pr: none
+
+schedules:
+  - cron: "0 0 * * *"
+    displayName: Daily midnight build
+    branches:
+      include:
+        - master
+
+stages:
+  - stage: Check_Validate_Allow_Fail
+    displayName: "Check and Validate - For Future Versions"
+    jobs:
+      - template: templates/yamllint.yml
+        parameters:
+          image_name: $(linux_image_name)
+      - template: templates/vagrant_validate.yml
+        parameters:
+          matrix:
+            vagrant-minimum-${{ variables.vagrant_minimum_version }}:
+              vagrant-version: ${{ variables.vagrant_minimum_version }}
+            vagrant-next-${{ variables.vagrant_next_version }}:
+              vagrant-version: ${{ variables.vagrant_next_version }}
+            vagrant-latest-${{ variables.vagrant_latest_version }}:
+              vagrant-version: ${{ variables.vagrant_latest_version }}
+          image_name: $(linux_image_name)
+          allow_fail: true
+      - template: templates/terraform_validate.yml
+        parameters:
+          matrix:
+            terraform-minimum-${{ variables.terraform_minimum_version }}:
+              terraform-version: ${{ variables.terraform_minimum_version }}
+            terraform-next-${{ variables.terraform_next_version }}:
+              terraform-version: ${{ variables.terraform_next_version }}
+            terraform-latest-${{ variables.terraform_latest_version }}:
+              terraform-version: ${{ variables.terraform_latest_version }}
+          image_name: $(linux_image_name)
+          allow_fail: true

@@ -1,8 +1,10 @@
 all:
 
-check: vagrant_validate ansible_check
+show_config:
 
-vagrant_validate:
+check: vagrant_check ansible_check
+
+vagrant_check:
 	vagrant validate
 
 ansible_check:
