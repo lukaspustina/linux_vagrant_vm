@@ -35,14 +35,14 @@ stages:
               vagrant-version: ${{ variables.vagrant_latest_version }}
           image_name: $(linux_image_name)
           allow_fail: true
-      - template: templates/terraform_validate.yml
+      - template: templates/ansible_validate.yml
         parameters:
           matrix:
-            terraform-minimum-${{ variables.terraform_minimum_version }}:
-              terraform-version: ${{ variables.terraform_minimum_version }}
-            terraform-next-${{ variables.terraform_next_version }}:
-              terraform-version: ${{ variables.terraform_next_version }}
-            terraform-latest-${{ variables.terraform_latest_version }}:
-              terraform-version: ${{ variables.terraform_latest_version }}
+            ansible-minimum-${{ variables.ansible_minimum_version }}:
+              ansible-version: ${{ variables.ansible_minimum_version }}
+            ansible-next-${{ variables.ansible_next_version }}:
+              ansible-version: ${{ variables.ansible_next_version }}
+            ansible-latest-${{ variables.ansible_latest_version }}:
+              ansible-version: ${{ variables.ansible_latest_version }}
           image_name: $(linux_image_name)
           allow_fail: true
