@@ -1,6 +1,6 @@
 Vagrant.require_version ">= 1.4.0"
 
-UBUNTU_VERSION = "bionic64"
+UBUNTU_VERSION = "focal64"
 
 BOX_NAME = "#{UBUNTU_VERSION}-vagrant-vm"
 
